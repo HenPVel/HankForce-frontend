@@ -36,7 +36,7 @@ function HomeScreen({navigation}) {
     return(
         <>
         <View style={styles.container}>
-        <Text>Hi, Glynne Shotwell!</Text>
+        <Text>Hi, Gwynne Shotwell!</Text>
         <Text>Anotha' Day Anotha' Dolla'</Text>
         <Text>Let's Make Some Sales!</Text>
         </View>

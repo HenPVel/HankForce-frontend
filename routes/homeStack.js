@@ -6,7 +6,7 @@ import HomeScreen from '../assets/components/HomeScreen';
 import OpportunitiesIndex from '../assets/components/OpportunitiesIndex';
 import OpportunityShow from '../assets/components/OpportunityShow';
 import NewActivityPage from '../assets/components/NewActivityPage';
-
+import NewOpportunityPage from '../assets/components/NewOpportunityPage';
 const screens ={
 
     LoadingScreen: {
@@ -18,11 +18,14 @@ const screens ={
     OpportunitiesIndex: {
         screen: OpportunitiesIndex
     },
-    OpportunitiyShow: {
+    OpportunityShow: {
         screen: OpportunityShow
     },
     NewActivityPage: {
         screen: NewActivityPage
+    },
+    NewOpportunityPage: {
+        screen: NewOpportunityPage
     }
 
 }

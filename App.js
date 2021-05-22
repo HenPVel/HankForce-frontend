@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View, SafeAreaView, Image, Button } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image, Button, TextInput} from 'react-native';
 import { useKeepAwake } from 'expo-keep-awake';
 import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';

@@ -1,30 +1,59 @@
-import { StyleSheet, Text, View, SafeAreaView, Image, Button } from 'react-native';
-import React from 'react';
+import { StyleSheet, Text, View, SafeAreaView, Image, Button, Modal } from 'react-native';
+import React, {useState} from 'react';
+import { MaterialIcons } from '@expo/vector-icons'
 
 function OpportunitiesIndex({ navigation }) {
     console.log(navigation.getParam('userOpportunities'))
     const userOpportunities = navigation.getParam('userOpportunities')
     console.log('userOpportunities', userOpportunities)
 
+    function handleOppItemPress (opportunity) {
+        console.log(opportunity)
+        navigation.navigate('OpportunityShow', {'opportunity':opportunity})
+    }
+
 const tableListItems = userOpportunities.map(opportunity => {
     return (
-        <View styles={styles.liStyle} >
-            <Text>Name: {opportunity.opp_title}</Text>
+        <View key={opportunity.id} styles={styles.liStyle} >
+            <Text onPress={() => handleOppItemPress(opportunity)}>Name: {opportunity.opp_title}</Text>
             <Text>Expected Close Date:{opportunity.expected_close}</Text>
             <Text>Stage: {opportunity.stage}</Text>
             <Text>${opportunity.value}</Text>
+            <Text></Text>
         </View>
     )
 })
 
+function handleAddOppButtonPress() {
+    setIsNewOppModalOpen(true)
+}
+
+function handleNewOppCancelButtonPress() {
+    setIsNewOppModalOpen(false)
+}
+
+const [isNewOppModalOpen, setIsNewOppModalOpen ] = useState(false)
+
+
+
     return(
         <>
+        <Modal visible={isNewOppModalOpen} animationType='slide'>
+            <View>
+                <Text>Yo</Text>
+                
+                <Button onPress={handleNewOppCancelButtonPress} title='Cancel' ></Button>
+            </View>
+        </Modal>
         <View style={styles.container}>
             <Text>My Opportunities</Text>
         </View>
         <View style={styles.myOppsContainer}>
         {tableListItems}
+        {/* <Button title='Add Opportunity' onPress={handleAddOppButtonPress} ></Button> */}
+        <MaterialIcons style={{alignSelf:'flex-end'}} name='add' size={35} onPress={handleAddOppButtonPress} />
         </View>
+        
         </>
     )
 }
@@ -62,6 +91,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    addOppButton: {
+        flex:3
     }
     
 })
