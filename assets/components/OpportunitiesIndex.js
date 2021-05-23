@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View, SafeAreaView, Image, Button, Modal } from 'react-native';
 import React, {useState} from 'react';
 import { MaterialIcons } from '@expo/vector-icons'
+import NewOpportunityForm from './NewOpportunityForm';
 
 function OpportunitiesIndex({ navigation }) {
     console.log(navigation.getParam('userOpportunities'))
     const userOpportunities = navigation.getParam('userOpportunities')
     console.log('userOpportunities', userOpportunities)
+    const userCompanies = navigation.getParam('userCompanies')
+    console.log('userCompanies', userCompanies)
 
     function handleOppItemPress (opportunity) {
         console.log(opportunity)
@@ -39,9 +42,9 @@ const [isNewOppModalOpen, setIsNewOppModalOpen ] = useState(false)
     return(
         <>
         <Modal visible={isNewOppModalOpen} animationType='slide'>
-            <View>
-                <Text>Yo</Text>
-                
+            <View style={styles.container}>
+                <Text>Enter your new opportunity details below...</Text>
+                <NewOpportunityForm userCompanies={userCompanies} />
                 <Button onPress={handleNewOppCancelButtonPress} title='Cancel' ></Button>
             </View>
         </Modal>

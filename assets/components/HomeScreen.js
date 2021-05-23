@@ -5,19 +5,30 @@ import {HOST_WITH_PORT} from '../../environment'
 
 function HomeScreen({navigation}) {
     const[userOpportunities, setUserOpportunities] = useState([])
-
+    const[userCompanies, setUserCompanies] = useState([])
+    
     const salesPersonId = 2
     //going to need to refactor this
 
     console.log(userOpportunities)
 
     useEffect(fetchUserOpportunities, [])
+    useEffect(fetchUserCompanies, [])
+    
 
     function fetchUserOpportunities() {
         fetch(`${HOST_WITH_PORT}/salespersons/${salesPersonId}/opportunities`)
         .then(res => res.json())
         .then(setUserOpportunities)
     }
+
+    function fetchUserCompanies() {
+        fetch(`${HOST_WITH_PORT}/organizations`)
+        .then(res => res.json())
+        .then(setUserCompanies)
+    }
+    
+    console.log(userCompanies)
 
     let opportunityElements = userOpportunities.map(opportunity => {
         return(
@@ -30,7 +41,7 @@ function HomeScreen({navigation}) {
     })
 
     function handleMyOppButtonPress() {
-        navigation.navigate('OpportunitiesIndex', {userOpportunities: userOpportunities})
+        navigation.navigate('OpportunitiesIndex', {userOpportunities: userOpportunities, userCompanies: userCompanies})
     }
 
     return(
