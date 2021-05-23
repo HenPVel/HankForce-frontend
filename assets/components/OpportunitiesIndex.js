@@ -4,11 +4,11 @@ import { MaterialIcons } from '@expo/vector-icons'
 import NewOpportunityForm from './NewOpportunityForm';
 
 function OpportunitiesIndex({ navigation }) {
-    console.log(navigation.getParam('userOpportunities'))
+   
     const userOpportunities = navigation.getParam('userOpportunities')
-    console.log('userOpportunities', userOpportunities)
+    
     const userCompanies = navigation.getParam('userCompanies')
-    console.log('userCompanies', userCompanies)
+    
 
     function handleOppItemPress (opportunity) {
         console.log(opportunity)
@@ -44,7 +44,7 @@ const [isNewOppModalOpen, setIsNewOppModalOpen ] = useState(false)
         <Modal visible={isNewOppModalOpen} animationType='slide'>
             <View style={styles.container}>
                 <Text>Enter your new opportunity details below...</Text>
-                <NewOpportunityForm userCompanies={userCompanies} />
+                <NewOpportunityForm userCompanies={userCompanies} addOpportunity={navigation.getParam('addOpportunity')}/>
                 <Button onPress={handleNewOppCancelButtonPress} title='Cancel' ></Button>
             </View>
         </Modal>

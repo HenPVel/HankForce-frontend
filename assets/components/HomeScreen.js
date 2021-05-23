@@ -41,7 +41,11 @@ function HomeScreen({navigation}) {
     })
 
     function handleMyOppButtonPress() {
-        navigation.navigate('OpportunitiesIndex', {userOpportunities: userOpportunities, userCompanies: userCompanies})
+        navigation.navigate('OpportunitiesIndex', {userOpportunities: userOpportunities, userCompanies: userCompanies, addOpportunity: addOpportunity})
+    }
+
+    function addOpportunity(formDataObject) {
+        console.log(formDataObject)
     }
 
     return(

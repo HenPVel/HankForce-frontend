@@ -11,6 +11,8 @@ const companyCollectionSelect = props.userCompanies.map( company => {
     )
 })
 
+console.log(props.addOpportunity)
+
 
 const [newOppFormData, setNewOppFormData] = useState({
     opp_title:'',
@@ -23,8 +25,15 @@ const [newOppFormData, setNewOppFormData] = useState({
 
 function handleTextChange(text, key) {
     setNewOppFormData({...newOppFormData, [key]:text})
-    console.log(newOppFormData)
 }
+
+
+
+function handleSubmitButtonPress() {
+   props.addOpportunity(newOppFormData)
+}
+
+
 
     return(
         <View>
@@ -78,6 +87,7 @@ function handleTextChange(text, key) {
                     display="default"
                     onChange={(event, date) => handleTextChange(date, 'expected_close')}
                 />
+                <Button title="Submit" onPress={handleSubmitButtonPress}></Button>
             </View>
         </View>
     )
