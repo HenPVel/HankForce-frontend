@@ -6,15 +6,17 @@ import {HOST_WITH_PORT} from '../../environment'
 function HomeScreen({navigation}) {
     const[userOpportunities, setUserOpportunities] = useState([])
     const[userCompanies, setUserCompanies] = useState([])
-    
+    const[alteredOpps, setAlteredOpps] = useState([])
+
     const salesPersonId = 2
     //going to need to refactor this
 
     
 
-    useEffect(fetchUserOpportunities, [])
+    useEffect(fetchUserOpportunities, [navigation])
     useEffect(fetchUserCompanies, [])
     
+    console.log('alteredOpps',alteredOpps)
 
     function fetchUserOpportunities() {
         fetch(`${HOST_WITH_PORT}/salespersons/${salesPersonId}/opportunities`)
@@ -76,7 +78,8 @@ function HomeScreen({navigation}) {
             const filteredOpps = userOpportunities.filter(opp => opp.id !== oppObject.id)
             setUserOpportunities([...filteredOpps, updatedObject])
             setIsEditOppModalOpen(false)
-            navigation.navigate('OpportunityShow', {opportunity:updatedObject})
+            navigation.navigate('OpportunitiesIndex', {userOpportunities: [...filteredOpps, updatedObject], userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity})
+            navigation.navigate('OpportunityShow', {opportunity:updatedObject, userCompanies: userCompanies})
             
         })
     }
@@ -87,10 +90,11 @@ function HomeScreen({navigation}) {
         })
         // .then(console.log)
         .then( _ => {
-            const alteredOpps = userOpportunities.filter(opp => opp.id !== oppId )
-            setUserOpportunities(alteredOpps)
+            const newArray = userOpportunities.filter(opp => opp.id !== oppId )
+            setUserOpportunities(newArray)
+            setAlteredOpps(newArray)
             setIsDeleteOppModalOpen(false)
-            navigation.navigate('OpportunitiesIndex', {userOpportunities: alteredOpps, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity})
+            navigation.navigate('OpportunitiesIndex', {userOpportunities: newArray, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity})
         })
     }
 
