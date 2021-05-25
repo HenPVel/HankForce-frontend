@@ -10,7 +10,7 @@ function HomeScreen({navigation}) {
     const salesPersonId = 2
     //going to need to refactor this
 
-    console.log(userOpportunities)
+    
 
     useEffect(fetchUserOpportunities, [])
     useEffect(fetchUserCompanies, [])
@@ -28,7 +28,7 @@ function HomeScreen({navigation}) {
         .then(setUserCompanies)
     }
     
-    console.log(userCompanies)
+    
 
     let opportunityElements = userOpportunities.map(opportunity => {
         return(
@@ -41,11 +41,57 @@ function HomeScreen({navigation}) {
     })
 
     function handleMyOppButtonPress() {
-        navigation.navigate('OpportunitiesIndex', {userOpportunities: userOpportunities, userCompanies: userCompanies, addOpportunity: addOpportunity})
+        navigation.navigate('OpportunitiesIndex', {userOpportunities: userOpportunities, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity})
     }
 
-    function addOpportunity(formDataObject) {
-        console.log(formDataObject)
+    function addOpportunity(formDataObject, setIsNewModalOpen) {
+        fetch(`${HOST_WITH_PORT}/opportunities`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formDataObject)
+        })
+        .then(res => res.json())
+        .then(newOppObject => {
+            
+            const newArray = [...userOpportunities, newOppObject]
+            setUserOpportunities(newArray)
+            setIsNewModalOpen(false)
+            navigation.navigate('OpportunitiesIndex', {userOpportunities:newArray})
+            
+        } )
+    }
+
+    function editOpportunity(formData, oppObject, setIsEditOppModalOpen) {
+        fetch(`${HOST_WITH_PORT}/opportunities/${oppObject.id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(res => res.json())
+        .then(updatedObject => {
+            const filteredOpps = userOpportunities.filter(opp => opp.id !== oppObject.id)
+            setUserOpportunities([...filteredOpps, updatedObject])
+            setIsEditOppModalOpen(false)
+            navigation.navigate('OpportunityShow', {opportunity:updatedObject})
+            
+        })
+    }
+
+    function deleteOpportunity(oppId, setIsDeleteOppModalOpen) {
+        fetch(`${HOST_WITH_PORT}/opportunities/${oppId}`, {
+            method: "DELETE"
+        })
+        // .then(console.log)
+        .then( _ => {
+            const alteredOpps = userOpportunities.filter(opp => opp.id !== oppId )
+            setUserOpportunities(alteredOpps)
+            setIsDeleteOppModalOpen(false)
+            navigation.navigate('OpportunitiesIndex', {userOpportunities: alteredOpps, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity})
+        })
     }
 
     return(
@@ -57,8 +103,8 @@ function HomeScreen({navigation}) {
         </View>
         <View style={styles.summary}>  
         <Text style={styles.summaryText}>Summary To Be Determined</Text>
-        <Button title="My Opportunities" onPress={handleMyOppButtonPress}></Button>
-        </View>  
+        <Button title="My Opportunities" onPress={handleMyOppButtonPress} ></Button>
+        </View>
         </>
     
     )

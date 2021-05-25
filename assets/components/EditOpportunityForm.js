@@ -1,40 +1,39 @@
 import React, {useState} from 'react';
-import {StyleSheet, Button, TextInput, View, Text, Platform} from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, Image, Button, Modal, TextInput } from 'react-native';
 import RNPickerSelect from "react-native-picker-select";
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-export default function NewOpportunityForm(props) {
+function EditOpportunityForm({ opportunityObject, userCompanies, editOpportunity, setIsEditOppModalOpen }) {
 
-const companyCollectionSelect = props.userCompanies.map( company => {
-    return(
-        {['label']:company.organization_name, ['value']:company.id}
-    )
-})
+    const cleanDate = JSON.parse(`\"${opportunityObject.expected_close}T00:00:00.000Z\"`)
 
+    const [editOppFormData, setEditOppFormData] = useState({
+        opp_title: opportunityObject.opp_title,
+        organization_id: opportunityObject.organization_id,
+        contact_person: opportunityObject.contact_person,
+        value: `${opportunityObject.value}.00`,
+        stage: opportunityObject.stage,
+        expected_close: new Date(opportunityObject.expected_close.replace(/-/g, '\/'))
+    })
+    //opportunityObject.expected_close.slice(0,4), opportunityObject.expected_close.slice(5,7), opportunityObject.expected_close.slice(8,10)
 
-const [newOppFormData, setNewOppFormData] = useState({
-    opp_title:'',
-    organization_id:'',
-    contact_person:'',
-    value:'',
-    stage:'',
-    expected_close: new Date()
-})
-
-console.log(newOppFormData)
-
-function handleTextChange(text, key) {
-    setNewOppFormData({...newOppFormData, [key]:text})
-}
+    const companyCollectionSelect = userCompanies.map( company => {
+        return(
+            {['label']:company.organization_name, ['value']:company.id}
+        )
+    })
 
 
-
-function handleSubmitButtonPress() {
-   props.addOpportunity(newOppFormData, props.setIsNewOppModalOpen)
-   
-}
+    function handleTextChange(text, key) {
+        setEditOppFormData({...editOppFormData, [key]:text})
+    }
 
 
+    
+
+    function handleSubmitButtonPress() {
+        editOpportunity(editOppFormData, opportunityObject, setIsEditOppModalOpen)
+    }
 
     return(
         <View>
@@ -43,14 +42,14 @@ function handleSubmitButtonPress() {
                 <TextInput
                     placeholder='Opportunity Name'
                     onChangeText={text => handleTextChange(text, 'opp_title')}
-                    value={newOppFormData.opp_title}
+                    value={editOppFormData.opp_title}
                 />
                 <Text>{`Opportunity Value ($):`}</Text> 
                 <TextInput
                     placeholder='$ Value'
+                    value={editOppFormData.value}
                     keyboardType='decimal-pad'
                     onChangeText={text => handleTextChange(text, 'value')}
-                    value={newOppFormData.value}
                 />
                 <Text>Opportunity Stage:</Text>
                 <RNPickerSelect 
@@ -66,33 +65,33 @@ function handleSubmitButtonPress() {
                          {label:"Closed/Lost", value:"Closed/Lost"}
                         ]
                     }
+                    value={editOppFormData.stage}
                 />
                 <Text>Company Name:</Text> 
                 <RNPickerSelect
                     onValueChange={value => handleTextChange(value,'organization_id')}
                     placeholder={{ label: "Select a Company From Existing Database", value:null}}
                     items={companyCollectionSelect}
-                    value = {newOppFormData.organization_id}
+                    value = {editOppFormData.organization_id}
                 />
                 <Text>Contact First and Last Name:</Text>
                 <TextInput 
                     placeholder='FirstName LastName'
                     onChangeText={text => handleTextChange(text, 'contact_person')}
-                    value={newOppFormData.contact_person}
+                    value={editOppFormData.contact_person}
                 />
                 <Text>Expected Close Date:</Text>
                 <DateTimePicker
                     testID="dateTimePicker"
-                    value={newOppFormData.expected_close}
+                    value={editOppFormData.expected_close}
                     mode="date"
                     display="default"
                     onChange={(event, date) => handleTextChange(date, 'expected_close')}
                 />
-                <Button title="Submit" onPress={handleSubmitButtonPress}></Button>
+                <Button title="Submit Changes" onPress={handleSubmitButtonPress}></Button>
             </View>
         </View>
     )
 }
 
-
-//     t.date "expected_close"
+export default EditOpportunityForm

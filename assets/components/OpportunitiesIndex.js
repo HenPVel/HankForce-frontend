@@ -4,15 +4,23 @@ import { MaterialIcons } from '@expo/vector-icons'
 import NewOpportunityForm from './NewOpportunityForm';
 
 function OpportunitiesIndex({ navigation }) {
-   
-    const userOpportunities = navigation.getParam('userOpportunities')
+    const [isNewOppModalOpen, setIsNewOppModalOpen ] = useState(false)
+
+    function handleAddOppButtonPress() {
+        setIsNewOppModalOpen(true)
+    }
     
+    function handleNewOppCancelButtonPress() {
+        setIsNewOppModalOpen(false)
+    }
+
+    const userOpportunities = navigation.getParam('userOpportunities')
     const userCompanies = navigation.getParam('userCompanies')
+    
     
 
     function handleOppItemPress (opportunity) {
-        console.log(opportunity)
-        navigation.navigate('OpportunityShow', {'opportunity':opportunity})
+        navigation.navigate('OpportunityShow', {'opportunity':opportunity, 'userCompanies': userCompanies, 'editOpportunity':navigation.getParam('editOpportunity'), 'deleteOpportunity':navigation.getParam('deleteOpportunity') })
     }
 
 const tableListItems = userOpportunities.map(opportunity => {
@@ -27,15 +35,7 @@ const tableListItems = userOpportunities.map(opportunity => {
     )
 })
 
-function handleAddOppButtonPress() {
-    setIsNewOppModalOpen(true)
-}
 
-function handleNewOppCancelButtonPress() {
-    setIsNewOppModalOpen(false)
-}
-
-const [isNewOppModalOpen, setIsNewOppModalOpen ] = useState(false)
 
 
 
@@ -44,7 +44,7 @@ const [isNewOppModalOpen, setIsNewOppModalOpen ] = useState(false)
         <Modal visible={isNewOppModalOpen} animationType='slide'>
             <View style={styles.container}>
                 <Text>Enter your new opportunity details below...</Text>
-                <NewOpportunityForm userCompanies={userCompanies} addOpportunity={navigation.getParam('addOpportunity')}/>
+                <NewOpportunityForm userCompanies={userCompanies} addOpportunity={navigation.getParam('addOpportunity')} setIsNewOppModalOpen={setIsNewOppModalOpen}/>
                 <Button onPress={handleNewOppCancelButtonPress} title='Cancel' ></Button>
             </View>
         </Modal>
