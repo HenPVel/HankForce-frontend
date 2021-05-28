@@ -6,7 +6,7 @@ import {HOST_WITH_PORT} from '../../environment'
 function HomeScreen({navigation}) {
     const[userOpportunities, setUserOpportunities] = useState([])
     const[userCompanies, setUserCompanies] = useState([])
-    const[alteredOpps, setAlteredOpps] = useState([])
+   
 
     const salesPersonId = 2
     //going to need to refactor this
@@ -16,7 +16,7 @@ function HomeScreen({navigation}) {
     useEffect(fetchUserOpportunities, [navigation])
     useEffect(fetchUserCompanies, [])
     
-    console.log('alteredOpps',alteredOpps)
+
 
     function fetchUserOpportunities() {
         fetch(`${HOST_WITH_PORT}/salespersons/${salesPersonId}/opportunities`)
@@ -32,18 +32,18 @@ function HomeScreen({navigation}) {
     
     
 
-    let opportunityElements = userOpportunities.map(opportunity => {
-        return(
-            <View key={opportunity.id}>
-            <Text>{opportunity.opp_title}</Text>
-            <Text>{opportunity.value}</Text>
-            <Text>{opportunity.expected_close}</Text>
-            </View>
-        ) 
-    })
+    // let opportunityElements = userOpportunities.map(opportunity => {
+    //     return(
+    //         <View key={opportunity.id}>
+    //         <Text>{opportunity.opp_title}</Text>
+    //         <Text>{opportunity.value}</Text>
+    //         <Text>{opportunity.expected_close}</Text>
+    //         </View>
+    //     ) 
+    // })
 
     function handleMyOppButtonPress() {
-        navigation.navigate('OpportunitiesIndex', {userOpportunities: userOpportunities, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity})
+        navigation.navigate('OpportunitiesIndex', {userOpportunities: userOpportunities, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity, addActivity:addActivity})
     }
 
     function addOpportunity(formDataObject, setIsNewModalOpen) {
@@ -65,6 +65,8 @@ function HomeScreen({navigation}) {
         } )
     }
 
+    console.log("userOpportunities", userOpportunities)
+
     function editOpportunity(formData, oppObject, setIsEditOppModalOpen) {
         fetch(`${HOST_WITH_PORT}/opportunities/${oppObject.id}`, {
             method: "PATCH",
@@ -78,8 +80,8 @@ function HomeScreen({navigation}) {
             const filteredOpps = userOpportunities.filter(opp => opp.id !== oppObject.id)
             setUserOpportunities([...filteredOpps, updatedObject])
             setIsEditOppModalOpen(false)
-            navigation.navigate('OpportunitiesIndex', {userOpportunities: [...filteredOpps, updatedObject], userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity})
-            navigation.navigate('OpportunityShow', {opportunity:updatedObject, userCompanies: userCompanies})
+            navigation.navigate('OpportunitiesIndex', {userOpportunities: [...filteredOpps, updatedObject], userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity, addActivity:addActivity})
+            navigation.navigate('OpportunityShow', {opportunity:updatedObject, userCompanies: userCompanies, 'editOpportunity':editOpportunity, 'deleteOpportunity':deleteOpportunity, 'addActivity':addActivity })
             
         })
     }
@@ -92,11 +94,35 @@ function HomeScreen({navigation}) {
         .then( _ => {
             const newArray = userOpportunities.filter(opp => opp.id !== oppId )
             setUserOpportunities(newArray)
-            setAlteredOpps(newArray)
             setIsDeleteOppModalOpen(false)
-            navigation.navigate('OpportunitiesIndex', {userOpportunities: newArray, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity})
+            navigation.navigate('OpportunitiesIndex', {userOpportunities: newArray, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity, addActivity:addActivity})
         })
     }
+
+    function addActivity(activityFormData, setIsAddActivityModalOpen, fullOppObject) {
+        fetch(`${HOST_WITH_PORT}/activities`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(activityFormData)
+        })
+        .then(res => res.json())
+        .then(newActivityObject => {
+            const duplicateFullOppObject = fullOppObject
+            duplicateFullOppObject['activities'] = [...duplicateFullOppObject.activities, newActivityObject]
+            const filteredArray = userOpportunities.filter(opportunity => opportunity.id !== fullOppObject.id)
+            const finalArray=[...filteredArray, duplicateFullOppObject]
+            console.log('finalArray', finalArray)
+            setUserOpportunities(finalArray)
+            setIsAddActivityModalOpen(false)
+            navigation.navigate('OpportunitiesIndex', {'userOpportunities': finalArray, userCompanies: userCompanies, addOpportunity: addOpportunity, editOpportunity: editOpportunity, deleteOpportunity:deleteOpportunity, addActivity:addActivity})
+            navigation.navigate('OpportunityShow', {'opportunity':duplicateFullOppObject, 'userCompanies': userCompanies, 'editOpportunity':editOpportunity, 'deleteOpportunity':deleteOpportunity, 'addActivity':addActivity })
+           
+
+        }) 
+}
+        
 
     return(
         <>
@@ -113,6 +139,8 @@ function HomeScreen({navigation}) {
     
     )
 }
+
+export default HomeScreen
 
 const styles = StyleSheet.create({
     container: {
@@ -132,6 +160,3 @@ const styles = StyleSheet.create({
     }
 })
 
-
-
-export default HomeScreen

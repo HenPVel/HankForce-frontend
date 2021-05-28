@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import NewOpportunityForm from './NewOpportunityForm';
 
 function OpportunitiesIndex({ navigation }) {
+    console.log('addactivityonindex', navigation.getParam('addActivity'))
     const [isNewOppModalOpen, setIsNewOppModalOpen ] = useState(false)
 
     function handleAddOppButtonPress() {
@@ -20,7 +21,7 @@ function OpportunitiesIndex({ navigation }) {
     
 
     function handleOppItemPress (opportunity) {
-        navigation.navigate('OpportunityShow', {'opportunity':opportunity, 'userCompanies': userCompanies, 'editOpportunity':navigation.getParam('editOpportunity'), 'deleteOpportunity':navigation.getParam('deleteOpportunity') })
+        navigation.navigate('OpportunityShow', {'opportunity':opportunity, 'userCompanies': userCompanies, 'editOpportunity':navigation.getParam('editOpportunity'), 'deleteOpportunity':navigation.getParam('deleteOpportunity'), 'addActivity':navigation.getParam('addActivity') })
     }
 
 const tableListItems = userOpportunities.map(opportunity => {
